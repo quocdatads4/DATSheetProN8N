@@ -1,5 +1,5 @@
 function createLogo(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
-  const sheet = spreadsheet.getSheetByName('Facebook') || spreadsheet.insertSheet('Facebook');
+  const sheet = spreadsheet.getActiveSheet();
   let lastColumn = sheet.getLastColumn();
   if (lastColumn === 0) {
     // Nếu sheet trống, đặt mặc định 10 cột
@@ -12,20 +12,22 @@ function createLogo(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
   /* Đặt background màu đen */
   range.setBackground('black');
   
-  /* Tạo range cho logo (A1:B2) */
-  const logoRange = sheet.getRange('A1:B2');
-  logoRange.merge().setHorizontalAlignment('center');
-  logoRange.setValue('DATMarketing™');
-  
+  /* Tạo range cho logo (A1:F2) */
+  const logoRange = sheet.getRange('A1:F2');
+  logoRange.clearFormat(); // Xóa định dạng merge cũ
+  logoRange.merge().setHorizontalAlignment('left').setBackground('black');
+  const logoText = 'DATMarketing™ | Giải pháp Marketing Automation n8n';
+  logoRange.setValue(logoText);
+ range.setBackground('black');
   /* Định dạng màu chữ cho logo */
   const richText = SpreadsheetApp.newRichTextValue()
-    .setText('DATMarketing™')
+    .setText(logoText)
     .setTextStyle(0, 3, SpreadsheetApp.newTextStyle()
       .setForegroundColor('red')
       .setFontFamily('Roboto')
       .setFontSize(26)
       .setBold(true)
-      .build()) /* DAT màu trắng */
+      .build()) /* DAT màu đỏ */
     .setTextStyle(3, 12, SpreadsheetApp.newTextStyle()
       .setForegroundColor('yellow')
       .setFontFamily('Roboto')
@@ -37,7 +39,13 @@ function createLogo(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
       .setFontFamily('Roboto')
       .setFontSize(26)
       .setBold(true)
-      .build()) /* ™ màu trắng */
+      .build()) /* ™ màu đỏ */
+    .setTextStyle(13, logoText.length, SpreadsheetApp.newTextStyle()
+      .setForegroundColor('white')
+      .setFontFamily('Roboto')
+      .setFontSize(26)
+      .setBold(true)
+      .build()) /* Phần text thêm vào màu trắng */
     .build();
   
   logoRange.setRichTextValue(richText);

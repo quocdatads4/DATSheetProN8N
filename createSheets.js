@@ -48,6 +48,42 @@ function doGet(e = {}) {
           throw new Error('Thiếu tham số spreadsheetId hoặc spreadsheetIds');
         }
         break;
+
+      case 'createPost':
+        if (params.spreadsheetIds) {
+          // Xử lý nhiều sheets
+          const sheetIds = params.spreadsheetIds.split(',');
+          const processed = [];
+          
+          for (const id of sheetIds) {
+            try {
+              const spreadsheet = SpreadsheetApp.openById(id.trim());
+              postsCreate(spreadsheet);
+              processed.push({id, status: 'success'});
+            } catch (error) {
+              processed.push({id, status: 'error', message: error.message});
+            }
+          }
+          
+          result = {
+            status: 'success',
+            message: 'Đã xử lý xong các sheets',
+            action: action,
+            details: processed
+          };
+        } else if (params.spreadsheetId) {
+          // Xử lý 1 sheet
+          const spreadsheet = SpreadsheetApp.openById(params.spreadsheetId);
+          postsCreate(spreadsheet);
+          result = {
+            status: 'success',
+            message: `Đã tạo Posts sheet cho spreadsheet ${params.spreadsheetId}`,
+            action: action
+          };
+        } else {
+          throw new Error('Thiếu tham số spreadsheetId hoặc spreadsheetIds');
+        }
+        break;
       default:
         result = {
           status: 'success',

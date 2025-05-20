@@ -1,16 +1,3 @@
-function getFacebookSheet(sheetId) {
-  return SpreadsheetApp.openById(sheetId).getSheetByName('Facebook') || 
-         SpreadsheetApp.openById(sheetId).insertSheet('Facebook');
-}
-
-function processAllFacebookSheets(sheetIds) {
-  sheetIds.forEach(id => {
-    const spreadsheet = SpreadsheetApp.openById(id);
-    facebookCreate(spreadsheet);
-  });
-  return {status: "success", message: `Đã xử lý ${sheetIds.length} sheets`};
-}
-
 function facebookCreate(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
   let sheet = spreadsheet.getSheetByName('Facebook');
   
@@ -39,23 +26,20 @@ function facebookCreate(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
     'talking_about_count',
     'new_like_count',
     'were_here_count',
-    'email_manager',
-    'id_drive',
-    'name_drive',
-    'webViewLink_drive'
+    'drive_name',
+    'drive_id',
+    'drive_wp_sheet_status'
   ];
   
   const headerRange4 = sheet.getRange(4, 1, 1, headers_row4.length);
   headerRange4.setValues([headers_row4]);
   
-  /* Định dạng font */
-  const textStyle = SpreadsheetApp.newTextStyle()
+  /* Định dạng header */
+  headerRange4
+    .setBackground('white')
     .setFontFamily('Roboto')
     .setFontSize(12)
-    .setBold(true)
-    .build();
-    
-  headerRange4.setTextStyle(textStyle);
+    .setFontWeight('bold');
 
   // Thêm headers cho dòng 6 và format thành bảng
   const headers_row6 = [
@@ -77,26 +61,20 @@ function facebookCreate(spreadsheet = SpreadsheetApp.getActiveSpreadsheet()) {
     'Lượt theo dõi',
     'talking_about_count',
     'Số lượt thích mới',
-    'Số người đã từng đến địa điểm',
-    'Email quản lý',
-    'Id Driver',
+    'Số người đến địa điểm',
     'Tên file',
-    'Đường dẫn Google Drive'
+    'ID drive',
+    'Trạng thái trang tính'
   ];
   
   const headerRange6 = sheet.getRange(6, 1, 1, headers_row6.length);
   headerRange6.setValues([headers_row6]);
   
   // Định dạng bảng cho dòng 6
-  const textStyle6 = SpreadsheetApp.newTextStyle()
+  headerRange6
     .setFontFamily('Roboto')
     .setFontSize(12)
-    .setBold(true)
-    .setForegroundColor('white')
-    .build();
-    
-  headerRange6.setTextStyle(textStyle6);
-  headerRange6.setBackground('#971928'); // Màu nền
+    .setFontWeight('bold');
 
   
   // Căn giữa nội dung các ô
